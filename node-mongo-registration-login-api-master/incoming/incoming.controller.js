@@ -208,14 +208,7 @@ router.post('/', async (req, res) => {
 router.put('/:_id', async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  const invoice = new Invoice({
-    date : Date,
-    title: req.body.title,
-    categorie: req.body.categorie,
-    amount: req.body.amount,
-    username: req.body.username,
-    date: req.body.date
-  });
+
   try {
     console.log('Update wird aufgerufen mit id' + req.params._id)
     console.log('neuer titel' + req.body.title);
@@ -224,7 +217,11 @@ router.put('/:_id', async (req, res) => {
       var dbo = db.db("invoice");
 
       var myquery = { _id: ObjectId(req.params._id) };
-      var newvalues = { $set: { invoice} };
+      var rawdate = req.body.date
+
+      //create a new Date object
+      var date = new Date(rawdate)
+      var newvalues = { $set: { title: req.body.title, amount: req.body.amount, categorie: req.body.categorie, date: date } };
       dbo.collection("customers").updateOne(myquery, newvalues, function (err, result) {
         if (err) throw err;
         console.log("1 document updated");
